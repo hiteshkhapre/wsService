@@ -57,6 +57,34 @@ public class RateWebService {
         
         return "default String";
     }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "getPassword")
+    public String getPassword(@WebParam(name = "username") String username) {
+        //TODO write your implementation code here:
+         try {
+            //TODO write your implementation code here:
+            Connection conn = mySQLABC.getConnection();
+            PreparedStatement pstat = conn.prepareStatement("select password from login where username = ?");
+            pstat.setString(1,username);
+            ResultSet rs = pstat.executeQuery();
+            rs.next();
+            if(rs.getString(1) == null)
+            {
+                return "No USER found.";
+            } else
+            {
+                String password = rs.getString(1);
+                return password;  
+            }
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+         return "No USER found.";
+    }
     
 
 
