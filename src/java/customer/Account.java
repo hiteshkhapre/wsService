@@ -10,25 +10,25 @@ package customer;
  * @author hiteshkhapre
  */
 public class Account {
-    private String custID;
-    private String accountNumber;
+    private int custID;
+    private int accountNumber;
     private String accountType;
     private String accountBalance;
     private String accountStatus;
 
-    public String getCustID() {
+ public int getCustID() {
         return custID;
     }
 
-    public void setCustID(String custID) {
+    public void setCustID(int custID) {
         this.custID = custID;
     }
 
-    public String getAccountNumber() {
+    public int getAccountNumber() {
         return accountNumber;
     }
 
-    public void setAccountNumber(String accountNumber) {
+    public void setAccountNumber(int accountNumber) {
         this.accountNumber = accountNumber;
     }
 

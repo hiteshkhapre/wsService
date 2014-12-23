@@ -5,13 +5,15 @@
  */
 package customer;
 
+import java.math.BigInteger;
+
 /**
  *
  * @author hiteshkhapre
  */
 public class CustomerProfile {
     
-     private String cust_ID;
+     private int cust_ID;
             private String cust_firstname;
             private String cust_lastname;
             private String cust_Addressline1;
@@ -20,18 +22,18 @@ public class CustomerProfile {
             private String cust_Contactnumber;
             private String cust_Email; 
             private String cust_Username;
-
-              
-             private String accountNumber;
+            private String cust_Password;
+     
+             private int accountNumber;
     private String accountType;
-    private String accountBalance;
+    private Double accountBalance;
     private String accountStatus;
 
-    public String getCust_ID() {
+    public int getCust_ID() {
         return cust_ID;
     }
 
-    public void setCust_ID(String cust_ID) {
+    public void setCust_ID(int cust_ID) {
         this.cust_ID = cust_ID;
     }
 
@@ -99,11 +101,20 @@ public class CustomerProfile {
         this.cust_Username = cust_Username;
     }
 
-    public String getAccountNumber() {
+    
+    public String getCust_Password() {
+        return cust_Password;
+    }
+
+    public void setCust_Password(String cust_Password) {
+        this.cust_Password = cust_Password;
+    }
+
+    public int getAccountNumber() {
         return accountNumber;
     }
 
-    public void setAccountNumber(String accountNumber) {
+    public void setAccountNumber(int accountNumber) {
         this.accountNumber = accountNumber;
     }
 
@@ -115,11 +126,11 @@ public class CustomerProfile {
         this.accountType = accountType;
     }
 
-    public String getAccountBalance() {
+    public Double getAccountBalance() {
         return accountBalance;
     }
 
-    public void setAccountBalance(String accountBalance) {
+    public void setAccountBalance(Double accountBalance) {
         this.accountBalance = accountBalance;
     }
 
