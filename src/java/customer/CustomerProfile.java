@@ -19,6 +19,13 @@ public class CustomerProfile {
             private String cust_City;
             private String cust_Contactnumber;
             private String cust_Email; 
+            private String cust_Username;
+
+              
+             private String accountNumber;
+    private String accountType;
+    private String accountBalance;
+    private String accountStatus;
 
     public String getCust_ID() {
         return cust_ID;
@@ -82,6 +89,46 @@ public class CustomerProfile {
 
     public void setCust_Email(String cust_Email) {
         this.cust_Email = cust_Email;
+    }
+    
+     public String getCust_Username() {
+        return cust_Username;
+    }
+
+    public void setCust_Username(String cust_Username) {
+        this.cust_Username = cust_Username;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public String getAccountBalance() {
+        return accountBalance;
+    }
+
+    public void setAccountBalance(String accountBalance) {
+        this.accountBalance = accountBalance;
+    }
+
+    public String getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(String accountStatus) {
+        this.accountStatus = accountStatus;
     }
     
 }
