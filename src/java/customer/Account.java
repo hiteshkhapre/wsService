@@ -5,6 +5,8 @@
  */
 package customer;
 
+import java.math.BigInteger;
+
 /**
  *
  * @author hiteshkhapre
@@ -13,7 +15,7 @@ public class Account {
     private int custID;
     private int accountNumber;
     private String accountType;
-    private String accountBalance;
+    private Double accountBalance;
     private String accountStatus;
 
  public int getCustID() {
@@ -40,11 +42,11 @@ public class Account {
         this.accountType = accountType;
     }
 
-    public String getAccountBalance() {
+    public Double getAccountBalance() {
         return accountBalance;
     }
 
-    public void setAccountBalance(String accountBalance) {
+    public void setAccountBalance(Double accountBalance) {
         this.accountBalance = accountBalance;
     }
 

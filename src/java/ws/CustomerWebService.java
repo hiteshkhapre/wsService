@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -35,9 +37,10 @@ public class CustomerWebService {
     public CustomerProfile getMyProfile(@WebParam(name = "customer_username") String customer_username) {
         //TODO write your implementation code here:
         CustomerProfile cust_profile = null;
+        Connection conn = null;
         try {
             //TODO write your implementation code here:
-            Connection conn = mySQLABC.getConnection();
+            conn = mySQLABC.getConnection();
             PreparedStatement pstat = conn.prepareStatement("SELECT * FROM `ABC Bank`.Customer where Cust_Username = ?");
             pstat.setString(1,customer_username);
             ResultSet rs = pstat.executeQuery();
@@ -59,6 +62,15 @@ public class CustomerWebService {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
+       finally
+        {
+            if(conn!= null)
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(CustomerWebService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return cust_profile;
     }
 
@@ -68,15 +80,15 @@ public class CustomerWebService {
      * @return 
      */
     @WebMethod(operationName = "getAccountDetails")
-    public Account getAccountDetails(@WebParam(name = "custID") String custID) {
-        //TODO write your implementation code here:
-        
+    public Account getAccountDetails(@WebParam(name = "custID") int custID) {
+        //TODO Change the datatype of Customer ID
+        Connection conn = null;
         Account account = null;
         try {
             //TODO write your implementation code here:
-            Connection conn = mySQLABC.getConnection();
+            conn = mySQLABC.getConnection();
             PreparedStatement pstat = conn.prepareStatement("SELECT * FROM `ABC Bank`.Account where Cust_ID = ?");
-            pstat.setString(1,custID);
+            pstat.setInt(1,custID);
             ResultSet rs = pstat.executeQuery();
             account = new Account();
             
@@ -84,7 +96,7 @@ public class CustomerWebService {
             {
              account.setAccountNumber(rs.getInt("Account_Number"));
              account.setAccountType(rs.getString("Account_Type"));
-             account.setAccountBalance(rs.getString("Account_Balance"));
+             account.setAccountBalance(rs.getDouble("Account_Balance"));
              account.setAccountStatus(rs.getString("Account_Status"));
              
             }
@@ -92,7 +104,16 @@ public class CustomerWebService {
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        }finally
+        {
+            if(conn!= null)
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(CustomerWebService.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        
         return account;
     }
 
@@ -100,6 +121,7 @@ public class CustomerWebService {
      * Web service operation
      * @param customerDetails
      * @return 
+     * @throws java.sql.SQLException 
      */
     @WebMethod(operationName = "addCustomer")
     public String addCustomer(@WebParam(name = "parameter") CustomerProfile customerDetails) {
@@ -176,12 +198,17 @@ public class CustomerWebService {
             
         }catch (SQLException ex) {
             System.out.println(ex.getMessage());
-            conn.rollback();
+            try {
+                conn.rollback();
+            } catch (SQLException ex1) {
+                Logger.getLogger(CustomerWebService.class.getName()).log(Level.SEVERE, null, ex1);
+            }
         }finally{
       //finally block used to close resources
       try{
          if(stat!=null)
-            conn.close();
+         {stat.close();
+            conn.close();}
       }catch(SQLException se){
       }// do nothing
       try{
@@ -190,8 +217,9 @@ public class CustomerWebService {
       }catch(SQLException se){
          se.printStackTrace();
       }
-        return "Inserted";
+        
     }
+        return "Inserted";
     }
 
     /**
@@ -200,7 +228,7 @@ public class CustomerWebService {
      * @return 
      */
     @WebMethod(operationName = "insertOperation")
-    public String insertOperation(@WebParam(name = "username") String username) {
+    public String insertOperation(@WebParam(name = "username") String username) throws SQLException {
         //TODO write your implementation code here:
         Connection conn = null;
         PreparedStatement stat = null;
@@ -236,8 +264,8 @@ public class CustomerWebService {
       }catch(SQLException se){
          se.printStackTrace();
       }
-        return "Inserted";
         }
+        return "Inserted";
     }
 
     /**
@@ -248,10 +276,10 @@ public class CustomerWebService {
     public Integer getTotalNumberOfCustomers() {
         //TODO write your implementation code here:
         int totalNumberOfCustomers = 0;
-        
+        Connection conn = null;
         try {
             //TODO write your implementation code here:
-            Connection conn = mySQLABC.getConnection();
+            conn = mySQLABC.getConnection();
             PreparedStatement pstat = conn.prepareStatement("SELECT count(*) FROM `ABC Bank`.Customer");
            // pstat.setString(1,customer_username);
             ResultSet rs = pstat.executeQuery();
@@ -264,6 +292,15 @@ public class CustomerWebService {
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        }
+        finally
+        {
+            if(conn!= null)
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(CustomerWebService.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return totalNumberOfCustomers;
     }
@@ -284,7 +321,70 @@ public class CustomerWebService {
         
         //insert into `ABC Bank`.Transaction (Transaction_ID,Account_Number,Transaction_Type,Timestamp,Transaction_Amount) values (null,6,'Debit',null,21);
         
+        Connection conn = null;
+        PreparedStatement pstat = null;
+        String username = null;
+        int accountNumber = 0;
+        ResultSet rs = null;
+        ResultSet rs1 = null;
         
-        return null;
+        
+        try
+        {
+            conn = mySQLABC.getConnection();
+            conn.setAutoCommit(false);
+            
+            pstat = conn.prepareStatement("select * from `ABC Bank`.Customer where Cust_ID = ? ");
+            pstat.setInt(1,custID);
+            rs = pstat.executeQuery();
+            while (rs.next())
+            {
+                username = rs.getString("Cust_Username");
+            }
+            
+            pstat = conn.prepareStatement("select * from `ABC Bank`.Account where Cust_ID = ?");
+            pstat.setInt(1,custID);
+            rs1 = pstat.executeQuery();
+            while(rs1.next())
+            {
+                accountNumber = rs1.getInt("Account_Number");
+            }
+            
+            pstat = conn.prepareStatement("delete from `ABC Bank`.Transaction where Account_Number = ?");
+            pstat.setInt(1, accountNumber);
+            pstat.execute();
+            
+             pstat = conn.prepareStatement("delete from `ABC Bank`.Account where Cust_ID = ?");
+            pstat.setInt(1, custID);
+            pstat.execute();
+            
+             pstat = conn.prepareStatement("delete from `ABC Bank`.Customer where Cust_ID = ?");
+            pstat.setInt(1, custID);
+            pstat.execute();
+            
+             pstat = conn.prepareStatement("delete from `ABC Bank`.login where username = ?");
+            pstat.setString(1, username);
+            pstat.execute();
+            
+            conn.commit();
+            
+        }catch(Exception ex)
+        {
+             System.out.println(ex.getMessage());
+        }
+        finally
+        {
+            if(conn!=null)
+            {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CustomerWebService.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        
+        return "Deleted";
     }
 }
