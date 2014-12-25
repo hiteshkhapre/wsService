@@ -6,12 +6,15 @@
 package transaction;
 
 import customer.Account;
+import customer.Transactions;
 import static java.lang.Double.sum;
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -216,6 +219,56 @@ public class TransactionWebService {
         }
         
         return "Withdrawn";
+    }
+
+    /**
+     * Web service operation
+     * @param accountNumber
+     * @return 
+     */
+    @WebMethod(operationName = "getTransactions")
+    public ArrayList<Transactions> getTransactions(@WebParam(name = "accountNumber") int accountNumber) {
+        //TODO write your implementation code here:
+        Transactions transactions = null;
+        ArrayList<Transactions> transactionList = new ArrayList<Transactions>();
+        Connection conn = null;
+        PreparedStatement pstat;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        
+        try
+        {
+            conn = mySQLABC.getConnection();
+            pstat = conn.prepareStatement("SELECT * FROM `ABC Bank`.Transaction where Account_Number = ?");
+            pstat.setInt(1, accountNumber);
+            
+             ResultSet rs = pstat.executeQuery();
+             
+             while(rs.next())
+             {
+                 transactions = new Transactions();
+                 transactions.setAccountNumber(accountNumber);
+                 transactions.setTransactionID(rs.getInt("Transaction_ID"));
+                 transactions.setTransactionType(rs.getString("Transaction_Type"));
+                 Date date = format.parse (rs.getTimestamp("Timestamp").toString());  
+                 transactions.setDateTime(date);
+                 transactions.setTransactionAmount(rs.getDouble("Transaction_Amount")); 
+                 transactionList.add(transactions);
+                 
+             }
+           
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }finally
+        {
+            if(conn != null)
+                try {
+                    conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(TransactionWebService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return transactionList;
     }
 
 }
