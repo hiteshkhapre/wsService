@@ -10,6 +10,9 @@
     <service name="TransactionWebService">
       <implementation-class>transaction.TransactionWebService</implementation-class>
     </service>
+    <service name="DirectDebitWebService">
+      <implementation-class>transaction.DirectDebitWebService</implementation-class>
+    </service>
   </services>
   <clients/>
 </jax-ws>
