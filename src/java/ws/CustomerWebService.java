@@ -193,6 +193,20 @@ public class CustomerWebService {
             stat.setString(5, "Active");
           
             stat.executeUpdate();
+            
+            Account account_new = getAccountDetails(newCustID);
+            int newAccount_number = account_new.getAccountNumber();
+            
+            stat = conn.prepareStatement("insert into `ABC Bank`.Transaction (Transaction_ID,Account_Number,Transaction_Type,"
+                   + "Timestamp,Transaction_Amount) values "
+                   + "(?,?,?,?,?)");
+             stat.setString(1, null);
+           stat.setInt(2,newAccount_number);
+           stat.setString(3,"Credit");
+           stat.setTimestamp(4,null);
+           stat.setDouble(5, accountbalance);
+           stat.executeUpdate();
+            
              conn.commit();
                  
             
@@ -349,6 +363,10 @@ public class CustomerWebService {
             {
                 accountNumber = rs1.getInt("Account_Number");
             }
+            
+            pstat = conn.prepareStatement("delete from `ABC Bank`.DirectDebit where AccountNumber = ?");
+            pstat.setInt(1, accountNumber);
+            pstat.execute();
             
             pstat = conn.prepareStatement("delete from `ABC Bank`.Transaction where Account_Number = ?");
             pstat.setInt(1, accountNumber);

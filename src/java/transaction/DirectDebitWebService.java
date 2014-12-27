@@ -10,14 +10,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
-import javax.naming.directory.DirContext;
 import javax.sql.DataSource;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -136,12 +134,12 @@ public class DirectDebitWebService {
         
         return account;
     }
-    
+
     /**
      * Web service operation
      */
-    @WebMethod(operationName = "directDebit")
-    public String directDebit(@WebParam(name = "custID") int custID, @WebParam(name = "accountNumber") int accountNumber, @WebParam(name = "amount") double amount) {
+    @WebMethod(operationName = "directDebitScheduledOperation")
+    public String directDebitScheduledOperation(@WebParam(name = "accountNumber") int accountNumber, @WebParam(name = "amount") double amount, @WebParam(name = "custID") int custID) {
         //TODO write your implementation code here:
          Connection conn = null;
         PreparedStatement stat = null;
@@ -150,10 +148,11 @@ public class DirectDebitWebService {
         {
             conn = mySQLABC.getConnection();
             conn.setAutoCommit(false);
+            
              //Get account Number and get the balance.
            Account account = getAccountDetails(custID);
            
-           Double oldAccountBalance = account.getAccountBalance();
+              Double oldAccountBalance = account.getAccountBalance();
            Double newAccountBalance;
            
            if(oldAccountBalance.compareTo(amount) > 0 || oldAccountBalance.compareTo(amount) == 0)
@@ -165,7 +164,6 @@ public class DirectDebitWebService {
            {
                return "Not Sufficient Balance.";
            }
-           
            //Create a Debit record in transaction table with current timestamp.
            stat = conn.prepareStatement("insert into `ABC Bank`.Transaction (Transaction_ID,Account_Number,Transaction_Type,"
                    + "Timestamp,Transaction_Amount) values "
@@ -176,20 +174,20 @@ public class DirectDebitWebService {
            stat.setTimestamp(4,null);
            stat.setDouble(5, amount);
            stat.executeUpdate();
-            
-            //Store the new balance in database
+           
+           //Store the new balance in database
            stat = conn.prepareStatement("UPDATE `ABC Bank`.`Account` SET `Account_Balance`= ? WHERE `Account_Number`= ? ");
            stat.setDouble(1,newAccountBalance);
            stat.setDouble(2, accountNumber);
             stat.executeUpdate();
            conn.commit();
-            //Pop up the success message 
            
         }catch(Exception ex)
         {
              System.out.println(ex.getMessage());
               try {
                   conn.rollback();
+                  return "Failed";
               } catch (SQLException ex1) {
                   Logger.getLogger(DirectDebitWebService.class.getName()).log(Level.SEVERE, null, ex1);
               }
@@ -204,8 +202,43 @@ public class DirectDebitWebService {
                 }
             }
         }
-        
         return "DirectDebited";
-    }   
+    }
 
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "getDirectDebitDetails")
+    public Integer getDirectDebitDetails(@WebParam(name = "accountNumber") int accountNumber) {
+        //TODO write your implementation code here:
+         //TODO Change the datatype of Customer ID
+        Connection conn = null;
+        int directDebitID = 0;      
+        
+        try {
+            //TODO write your implementation code here:
+            conn = mySQLABC.getConnection();
+            PreparedStatement pstat = conn.prepareStatement("SELECT * FROM `ABC Bank`.DirectDebit where AccountNumber = ?");
+            pstat.setInt(1,accountNumber);
+            ResultSet rs = pstat.executeQuery();
+             
+            while(rs.next())
+            {
+              directDebitID = rs.getInt("DirectDebitID");
+            }
+            
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }finally
+        {
+            if(conn!= null)
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(DirectDebitWebService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return directDebitID;
+    }
 }
