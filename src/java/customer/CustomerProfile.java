@@ -23,7 +23,9 @@ public class CustomerProfile {
             private String cust_Email; 
             private String cust_Username;
             private String cust_Password;
-     
+           
+
+ 
              private int accountNumber;
     private String accountType;
     private Double accountBalance;

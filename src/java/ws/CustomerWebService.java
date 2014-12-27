@@ -387,4 +387,114 @@ public class CustomerWebService {
         
         return "Deleted";
     }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "updateCustomer")
+    public String updateCustomer(@WebParam(name = "customerDetails") CustomerProfile customerDetails) {
+    
+        Connection conn = null;
+        PreparedStatement stat = null;
+        
+        try
+        {
+            conn = mySQLABC.getConnection();
+            conn.setAutoCommit(false);
+            
+            
+            int custID = customerDetails.getCust_ID();
+            String firstname = customerDetails.getCust_firstname();
+            String lastname = customerDetails.getCust_lastname();
+            String addressLine1 = customerDetails.getCust_Addressline1();
+            String addressLine2 = customerDetails.getCust_Addressline2();
+            String city = customerDetails.getCust_City();
+            String contact_number = customerDetails.getCust_Contactnumber();
+            String email = customerDetails.getCust_Email();
+            
+                       
+            if(firstname != null || !firstname.isEmpty())
+            {
+                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Firstname`= ? WHERE `Cust_ID`= ?");
+                stat.setString(1, firstname);
+                stat.setInt(2, custID);
+                stat.executeUpdate();
+            }
+            
+              if(lastname != null || !lastname.isEmpty())
+            {
+                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Lastname`= ? WHERE `Cust_ID`= ?");
+                stat.setString(1, lastname);
+                stat.setInt(2, custID);
+                stat.executeUpdate();
+            }
+              
+                if(addressLine1 != null || !addressLine1.isEmpty())
+            {
+                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Addressline1`= ? WHERE `Cust_ID`= ?");
+                stat.setString(1, addressLine1);
+                stat.setInt(2, custID);
+                stat.executeUpdate();
+            }
+                
+                if(addressLine2 != null || !addressLine2.isEmpty())
+            {
+                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Addressline2`= ? WHERE `Cust_ID`= ?");
+                stat.setString(1, addressLine2);
+                stat.setInt(2, custID);
+                stat.executeUpdate();
+            }  
+               
+                if(city != null || !city.isEmpty())
+            {
+                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_City`= ? WHERE `Cust_ID`= ?");
+                stat.setString(1, city);
+                stat.setInt(2, custID);
+                stat.executeUpdate();
+            }   
+                
+                 if(contact_number != null || !contact_number.isEmpty())
+            {
+                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Contactnumber`= ? WHERE `Cust_ID`= ?");
+                stat.setString(1, contact_number);
+                stat.setInt(2, custID);
+                stat.executeUpdate();
+            }   
+                 
+                  if(email != null || !email.isEmpty())
+            {
+                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Email`= ? WHERE `Cust_ID`= ?");
+                stat.setString(1, email);
+                stat.setInt(2, custID);
+                stat.executeUpdate();
+            }   
+            
+                  conn.commit();
+                  
+                  
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                Logger.getLogger(CustomerWebService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }    //finally block used to close resources
+      try{
+         if(stat!=null)
+         {stat.close();
+            conn.close();}
+      }catch(SQLException se){
+      }// do nothing
+      try{
+         if(conn!=null)
+            conn.close();
+      }catch(SQLException se){
+         se.printStackTrace();
+      }
+                
+        return "Updated";
+    }
+
 }

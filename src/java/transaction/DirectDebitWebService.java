@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -18,6 +19,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.naming.directory.DirContext;
 import javax.sql.DataSource;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
@@ -32,9 +34,12 @@ public class DirectDebitWebService {
     /**
      * Web service operation
      * @param accountNumber
+     * @param amount
+     * @param date
+     * @return 
      */
     @WebMethod(operationName = "insertDDData")
-    public String insertDDData(@WebParam(name = "accountNumber") int accountNumber, @WebParam(name = "amount") double amount, @WebParam(name = "date") String date) {
+    public String insertDDData(@WebParam(name = "accountNumber") int accountNumber, @WebParam(name = "amount") double amount, @WebParam(name = "date") XMLGregorianCalendar date) {
         //TODO write your implementation code here:
         
          Connection conn = null;
@@ -52,8 +57,13 @@ public class DirectDebitWebService {
            stat.setString(1, null);
            stat.setInt(2,accountNumber);
            stat.setDouble(3,amount);
-           stat.setString(4, date);
-          // stat.setDate(4, (java.sql.Date) date);
+           //stat.setString(4, date);
+           
+           java.util.Date utilDate = date.toGregorianCalendar().getTime();
+            java.sql.Date sqlDt = new java.sql.Date(utilDate.getTime()); 
+
+
+           stat.setDate(4,sqlDt);
            stat.setTimestamp(5,null);
            
            stat.executeUpdate();
