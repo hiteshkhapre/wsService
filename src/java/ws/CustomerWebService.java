@@ -396,7 +396,13 @@ public class CustomerWebService {
     
         Connection conn = null;
         PreparedStatement stat = null;
-        
+        PreparedStatement stat1 = null;
+        PreparedStatement stat2 = null;
+        PreparedStatement stat3 = null;
+        PreparedStatement stat4 = null;
+        PreparedStatement stat5 = null;
+        PreparedStatement stat6 = null;
+        //PreparedStatement stat = null;
         try
         {
             conn = mySQLABC.getConnection();
@@ -413,7 +419,7 @@ public class CustomerWebService {
             String email = customerDetails.getCust_Email();
             
                        
-            if(firstname != null || !firstname.isEmpty())
+            if(!"".equals(firstname))
             {
                 stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Firstname`= ? WHERE `Cust_ID`= ?");
                 stat.setString(1, firstname);
@@ -421,52 +427,52 @@ public class CustomerWebService {
                 stat.executeUpdate();
             }
             
-              if(lastname != null || !lastname.isEmpty())
+              if(!"".equals(lastname))
             {
-                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Lastname`= ? WHERE `Cust_ID`= ?");
-                stat.setString(1, lastname);
-                stat.setInt(2, custID);
-                stat.executeUpdate();
+                stat1 = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Lastname`= ? WHERE `Cust_ID`= ?");
+                stat1.setString(1, lastname);
+                stat1.setInt(2, custID);
+                stat1.executeUpdate();
             }
               
-                if(addressLine1 != null || !addressLine1.isEmpty())
+                if(!"".equals(addressLine1))
             {
-                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Addressline1`= ? WHERE `Cust_ID`= ?");
-                stat.setString(1, addressLine1);
-                stat.setInt(2, custID);
-                stat.executeUpdate();
+                stat2 = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Addressline1`= ? WHERE `Cust_ID`= ?");
+                stat2.setString(1, addressLine1);
+                stat2.setInt(2, custID);
+                stat2.executeUpdate();
             }
                 
-                if(addressLine2 != null || !addressLine2.isEmpty())
+                if(!"".equals(addressLine2))
             {
-                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Addressline2`= ? WHERE `Cust_ID`= ?");
-                stat.setString(1, addressLine2);
-                stat.setInt(2, custID);
-                stat.executeUpdate();
+                stat3 = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Addressline2`= ? WHERE `Cust_ID`= ?");
+                stat3.setString(1, addressLine2);
+                stat3.setInt(2, custID);
+                stat3.executeUpdate();
             }  
                
-                if(city != null || !city.isEmpty())
+                if(!"".equals(city))
             {
-                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_City`= ? WHERE `Cust_ID`= ?");
-                stat.setString(1, city);
-                stat.setInt(2, custID);
-                stat.executeUpdate();
+                stat4 = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_City`= ? WHERE `Cust_ID`= ?");
+                stat4.setString(1, city);
+                stat4.setInt(2, custID);
+                stat4.executeUpdate();
             }   
                 
-                 if(contact_number != null || !contact_number.isEmpty())
+                 if(!"".equals(contact_number))
             {
-                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Contactnumber`= ? WHERE `Cust_ID`= ?");
-                stat.setString(1, contact_number);
-                stat.setInt(2, custID);
-                stat.executeUpdate();
+                stat5 = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Contactnumber`= ? WHERE `Cust_ID`= ?");
+                stat5.setString(1, contact_number);
+                stat5.setInt(2, custID);
+                stat5.executeUpdate();
             }   
                  
-                  if(email != null || !email.isEmpty())
+                  if(!"".equals(email))
             {
-                stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Email`= ? WHERE `Cust_ID`= ?");
-                stat.setString(1, email);
-                stat.setInt(2, custID);
-                stat.executeUpdate();
+                stat6 = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Email`= ? WHERE `Cust_ID`= ?");
+                stat6.setString(1, email);
+                stat6.setInt(2, custID);
+                stat6.executeUpdate();
             }   
             
                   conn.commit();
