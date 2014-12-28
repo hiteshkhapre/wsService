@@ -193,7 +193,8 @@ public class CustomerWebService {
             stat.setString(5, "Active");
           
             stat.executeUpdate();
-            
+             conn.commit();
+             
             Account account_new = getAccountDetails(newCustID);
             int newAccount_number = account_new.getAccountNumber();
             
