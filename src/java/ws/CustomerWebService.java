@@ -338,6 +338,7 @@ public class CustomerWebService {
         
         Connection conn = null;
         PreparedStatement pstat = null;
+        PreparedStatement stat = null;
         String username = null;
         int accountNumber = 0;
         ResultSet rs = null;
@@ -352,11 +353,16 @@ public class CustomerWebService {
             pstat = conn.prepareStatement("select * from `ABC Bank`.Customer where Cust_ID = ? ");
             pstat.setInt(1,custID);
             rs = pstat.executeQuery();
-            while (rs.next())
+            if(!rs.next())
+            {
+                return "No Customer Found.";
+            }else
             {
                 username = rs.getString("Cust_Username");
             }
             
+                      
+           
             pstat = conn.prepareStatement("select * from `ABC Bank`.Account where Cust_ID = ?");
             pstat.setInt(1,custID);
             rs1 = pstat.executeQuery();
@@ -381,7 +387,7 @@ public class CustomerWebService {
             pstat.setInt(1, custID);
             pstat.execute();
             
-             pstat = conn.prepareStatement("delete from `ABC Bank`.login where username = ?");
+            pstat = conn.prepareStatement("delete from `ABC Bank`.login where username = ?");
             pstat.setString(1, username);
             pstat.execute();
             
@@ -414,6 +420,7 @@ public class CustomerWebService {
     public String updateCustomer(@WebParam(name = "customerDetails") CustomerProfile customerDetails) {
     
         Connection conn = null;
+        PreparedStatement pstat = null;
         PreparedStatement stat = null;
         PreparedStatement stat1 = null;
         PreparedStatement stat2 = null;
@@ -422,6 +429,7 @@ public class CustomerWebService {
         PreparedStatement stat5 = null;
         PreparedStatement stat6 = null;
         //PreparedStatement stat = null;
+        ResultSet rs3 = null;
         try
         {
             conn = mySQLABC.getConnection();
@@ -437,7 +445,15 @@ public class CustomerWebService {
             String contact_number = customerDetails.getCust_Contactnumber();
             String email = customerDetails.getCust_Email();
             
-                       
+              pstat = conn.prepareStatement("select * from `ABC Bank`.Customer where Cust_ID = ? ");
+            pstat.setInt(1,custID);
+            rs3 = pstat.executeQuery();
+            
+            if(!rs3.next())
+            {
+              return "No Customer Found.";
+            }
+                
             if(!"".equals(firstname))
             {
                 stat = conn.prepareStatement("UPDATE `ABC Bank`.`Customer` SET `Cust_Firstname`= ? WHERE `Cust_ID`= ?");
